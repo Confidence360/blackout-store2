@@ -3,37 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BLACKOUT - Product Selector</title>
-  <link rel="manifest" href="manifest.json" />
+  <title>BLACKOUT Product Selector</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon.png" />
   <meta name="theme-color" content="#0f0f1a" />
 </head>
 <body>
   <div class="container">
-    <div class="sidebar">
-      <img src="images/logo.png" alt="Logo" style="max-width:100px" />
-      <h1>BLACKOUT</h1>
-      <button onclick="clearSelection()">🧹 Clear</button>
-      <button onclick="toggleTheme()">🌙 Theme</button>
-      <div>Total: <span id="total-price">$0.00</span></div>
-      <div id="selected-names">Selected: None</div>
-    </div>
-    <div class="main">
-      <input type="text" id="search" placeholder="Search..." oninput="renderProducts()" />
-      <input type="number" id="minPrice" placeholder="Min $" oninput="renderProducts()" />
-      <input type="number" id="maxPrice" placeholder="Max $" oninput="renderProducts()" />
-      <div id="product-list" class="grid"></div>
-    </div>
+    <aside class="sidebar">
+      <header>
+        <img src="icon.png" alt="BLACKOUT Logo" />
+        <h1>BLACKOUT</h1>
+      </header>
+      <div class="actions">
+        <button onclick="toggleAdmin()">Toggle Admin</button>
+        <button onclick="resetApp()">Reset</button>
+      </div>
+      <div class="total">Total Price: <span id="total-price">$0</span></div>
+      <div id="selected-names"></div>
+    </aside>
+
+    <main class="main">
+      <div class="filters">
+        <input type="text" id="filter-category" placeholder="Filter by category" />
+        <input type="text" id="filter-price" placeholder="Max price" />
+        <input type="text" id="filter-keyword" placeholder="Search keyword" />
+        <button onclick="applyFilters()">Apply</button>
+      </div>
+      <div id="product-grid" class="grid"></div>
+
+      <section class="admin-panel" id="admin-panel">
+        <h3>Admin Panel</h3>
+        <textarea id="csv-input"></textarea>
+        <br />
+        <button onclick="loadCSVText()">Load CSV</button>
+        <button onclick="downloadCSV()">Download CSV</button>
+      </section>
+    </main>
   </div>
+
+  <button id="adminTrigger" onclick="toggleAdmin()">Admin</button>
+  <div class="toast" id="toast"></div>
 
   <script src="app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log("Service Worker registered"))
-        .catch(e => console.error("Service Worker error:", e));
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => console.log('Service Worker registered', reg))
+          .catch(err => console.error('Service Worker error', err));
+      });
     }
+
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      const btn = document.createElement('button');
+      btn.textContent = 'Install App';
+      btn.style.position = 'fixed';
+      btn.style.bottom = '20px';
+      btn.style.right = '20px';
+      btn.style.zIndex = 9999;
+      btn.style.padding = '10px 20px';
+      btn.style.borderRadius = '8px';
+      btn.style.background = '#00ffc3';
+      btn.style.color = '#000';
+      btn.style.border = 'none';
+      btn.style.cursor = 'pointer';
+
+      document.body.appendChild(btn);
+
+      btn.addEventListener('click', () => {
+        e.prompt();
+        btn.remove();
+      });
+    });
   </script>
 </body>
 </html>
