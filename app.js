@@ -1,91 +1,120 @@
-let products = [], selection = {};
+let products = [];
+let selected = new Set();
+let isDark = true;
+let csvURL = "products.csv";
 
-function showToast(message) {
-  alert(message); // simple fallback
-}
+// Load products on startup
+window.addEventListener("DOMContentLoaded", () => {
+  loadCSV();
+});
 
-function parseCSV(text) {
-  const lines = text.trim().split("\n");
-  const headers = lines[0].split(",");
-  return lines.slice(1).map(line => {
-    const values = line.split(",");
-    let entry = {};
-    headers.forEach((h, i) => {
-      entry[h.trim()] = h.toLowerCase() === "price" ? parseFloat(values[i]) : values[i];
-    });
-    return entry;
-  });
-}
-
-function renderProducts() {
-  const list = document.getElementById("product-list");
-  const search = document.getElementById("search").value.toLowerCase();
-  const min = parseFloat(document.getElementById("minPrice").value) || 0;
-  const max = parseFloat(document.getElementById("maxPrice").value) || Infinity;
-  list.innerHTML = "";
-
-  for (let p of products) {
-    if (!p.name.toLowerCase().includes(search) || p.price < min || p.price > max) continue;
-
-    let div = document.createElement("div");
-    div.className = "product";
-    div.innerHTML = `
-      <img src="${p.image}" alt="${p.name}" onerror="this.src='images/fallback.jpg'" />
-      <div class="product-name">${p.name}</div>
-      <div class="product-price">$${p.price}</div>
-      <div class="product-controls">
-        <button onclick="adjustSelection('${p.name}', -1)">−</button>
-        <span>${selection[p.name] || 0}</span>
-        <button onclick="adjustSelection('${p.name}', 1)">+</button>
-      </div>
-    `;
-    list.appendChild(div);
-  }
-}
-
-function adjustSelection(name, delta) {
-  selection[name] = (selection[name] || 0) + delta;
-  if (selection[name] < 0) selection[name] = 0;
-  updateSidebar();
-  renderProducts();
-}
-
-function updateSidebar() {
-  let total = 0;
-  let list = [];
-
-  for (let [name, qty] of Object.entries(selection)) {
-    if (qty > 0) {
-      const item = products.find(p => p.name === name);
-      total += item.price * qty;
-      list.push(`${name} (${qty})`);
-    }
-  }
-
-  document.getElementById("total-price").textContent = `$${total.toFixed(2)}`;
-  document.getElementById("selected-names").textContent = list.length ? `Selected: ${list.join(", ")}` : "Selected: None";
-}
-
-function clearSelection() {
-  selection = {};
-  updateSidebar();
-  renderProducts();
-}
-
-function toggleTheme() {
-  document.body.classList.toggle("dark");
-}
-
+// Load CSV file
 async function loadCSV() {
   try {
-    const res = await fetch("products.csv");
-    const text = await res.text();
-    products = parseCSV(text);
-    renderProducts();
+    const res = await fetch(csvURL);
+    const csv = await res.text();
+    parseCSV(csv);
+    document.getElementById("csvEditor").value = csv;
+    showToast("Loaded CSV from server");
   } catch (e) {
-    alert("Failed to load products.");
-    console.error(e);
+    console.error("CSV fetch failed:", e);
+    showToast("Using cached CSV");
   }
 }
 
-loadCSV();
+// Parse CSV into products array
+function parseCSV(csv) {
+  const rows = csv.trim().split("\n").slice(1);
+  products = rows.map(row => {
+    const [name, price, category, image] = row.split(",");
+    return {
+      name: name.trim(),
+      price: parseFloat(price.trim()),
+      category: category.trim(),
+      image: image.trim() || "images/placeholder.jpg"
+    };
+  });
+  renderProducts();
+}
+
+// Display product cards
+function renderProducts() {
+  const container = document.getElementById("product-list");
+  const query = document.getElementById("search").value.toLowerCase();
+  const min = parseFloat(document.getElementById("minPrice").value) || 0;
+  const max = parseFloat(document.getElementById("maxPrice").value) || Infinity;
+
+  container.innerHTML = "";
+  products.forEach((p, i) => {
+    if (
+      p.name.toLowerCase().includes(query) &&
+      p.price >= min &&
+      p.price <= max
+    ) {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.onclick = () => toggleSelect(i);
+      card.classList.toggle("selected", selected.has(i));
+      card.innerHTML = `
+        <img src="${p.image}" alt="${p.name}" />
+        <div class="info">
+          <h4>${p.name}</h4>
+          <p>$${p.price.toFixed(2)}</p>
+          <small>${p.category}</small>
+        </div>`;
+      container.appendChild(card);
+    }
+  });
+  updateSummary();
+}
+
+// Toggle product selection
+function toggleSelect(i) {
+  if (selected.has(i)) {
+    selected.delete(i);
+  } else {
+    selected.add(i);
+  }
+  renderProducts();
+}
+
+// Update total price and names
+function updateSummary() {
+  const total = [...selected].reduce((sum, i) => sum + products[i].price, 0);
+  const names = [...selected].map(i => products[i].name).join(", ") || "None";
+  document.getElementById("total-price").textContent = `$${total.toFixed(2)}`;
+  document.getElementById("selected-names").textContent = "Selected: " + names;
+}
+
+// Clear selection
+function clearSelection() {
+  selected.clear();
+  renderProducts();
+}
+
+// Toggle dark/light theme
+function toggleTheme() {
+  isDark = !isDark;
+  document.body.classList.toggle("light", !isDark);
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+}
+
+// Apply changes from CSV editor
+function applyCSVChanges() {
+  const newCSV = document.getElementById("csvEditor").value;
+  parseCSV(newCSV);
+  showToast("CSV updated");
+}
+
+// Reload CSV file
+function refreshCSV() {
+  loadCSV();
+}
+
+// Show toast message
+function showToast(msg) {
+  const toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2000);
+}
