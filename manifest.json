@@ -1,10 +1,12 @@
 {
-  "name": "BLACKOUT Product Selector",
+  "name": "BLACKOUT - Product Selector",
   "short_name": "BLACKOUT",
-  "start_url": ".",
+  "description": "A fast, offline-capable product selector for BLACKOUT",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f0f1a",
   "theme_color": "#0f0f1a",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon.png",
