@@ -1,4 +1,9 @@
-name,price,image,description
-LED Bulb,3.99,images/bulb.jpg,A low power LED bulb
-Power Bank,25.00,images/powerbank.jpg,Fast-charging 10000mAh power bank
-Solar Light,18.75,images/solarlight.jpg,Rechargeable solar light
+Name,Category,Price,Image
+Smart Light,Lighting,19.99,https://via.placeholder.com/200?text=Smart+Light
+USB Fan,Cooling,12.49,https://via.placeholder.com/200?text=USB+Fan
+Wireless Charger,Accessories,22.99,https://via.placeholder.com/200?text=Charger
+Bluetooth Speaker,Audio,34.95,https://via.placeholder.com/200?text=Speaker
+LED Strip,Lighting,15.00,https://via.placeholder.com/200?text=LED+Strip
+Portable Projector,Entertainment,89.00,https://via.placeholder.com/200?text=Projector
+Mini Fridge,Appliances,45.00,https://via.placeholder.com/200?text=Mini+Fridge
+Smart Plug,Accessories,9.99,https://via.placeholder.com/200?text=Smart+Plug
