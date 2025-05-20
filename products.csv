@@ -1,6 +1,11 @@
-Name,Price,Image,Description
-LED Flashlight,19.99,images/flashlight.jpg,High lumen tactical flashlight.
-Power Bank,29.99,images/powerbank.jpg,10,000mAh power bank with dual output.
-Emergency Radio,39.99,images/radio.jpg,Solar + hand-crank NOAA radio.
-Water Filter,24.99,images/filter.jpg,Portable water filtration system.
-Thermal Blanket,9.99,images/blanket.jpg,Compact emergency thermal blanket.
+name,price,image,description
+CocaCola,10,images/flashlight.jpg,Classic refreshing soda.
+Corona,20,https://raw.githubusercontent.com/Confidence360/blackout-store/main/images/corona.jpg,Light Mexican beer with a crisp taste.
+Budweiser,20,https://raw.githubusercontent.com/Confidence360/blackout-store/main/images/corona.jpg,American lager known for its smoothness.
+Franziskaner,20,https://raw.githubusercontent.com/Confidence360/blackout-store/main/images/franziskaner.jpg,Traditional German wheat beer.
+OJ ,30,https://raw.githubusercontent.com/Confidence360/blackout-store/main/images/OJ-8.5.jpg,Fruity drink with 8.5% alcohol content.
+OJ ,35,https://raw.githubusercontent.com/Confidence360/blackout-store/main/images/OJ-10.jpg,Strong orange drink with 10% ABV.
+OJ ,35,https://raw.githubusercontent.com/Confidence360/blackout-store/main/images/OJ-12.jpg,Smooth and citrusy 12% strength.
+OJ ,40,https://raw.githubusercontent.com/Confidence360/blackout-store/main/images/OJ-14.jpg,Powerful and zesty at 14%.
+OJ ,40,https://raw.githubusercontent.com/Confidence360/blackout-store/main/images/OJ-16.jpg,Fruity beverage with a bold 16% punch.
+OJ ,40,https://raw.githubusercontent.com/Confidence360/blackout-store/main/images/OJ-18.jpg,Highest strength orange drink at 18%.
